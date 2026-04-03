@@ -42,18 +42,18 @@ extension View {
     /// requires a non-optional value, but the data driving it is optional.
     /// If the value is `nil`, the original view is returned unchanged.
     ///
-    /// Example:
+    /// - Parameter value: An optional value that determines whether the modifier is applied.
+    /// - Parameter apply: A closure that takes the original view and the unwrapped value,
+    ///   and returns a modified view.
+    /// - Returns: Either the modified view (if `value` is non-`nil`) or the original view.
+    ///
+    /// ### Example:
     /// ```swift
     /// Text("Hello")
     ///     .applyIf(accessibilityId) { view, id in
     ///         view.accessibilityIdentifier(id)
     ///     }
     /// ```
-    ///
-    /// - Parameter value: An optional value that determines whether the modifier is applied.
-    /// - Parameter apply: A closure that takes the original view and the unwrapped value,
-    ///   and returns a modified view.
-    /// - Returns: Either the modified view (if `value` is non-`nil`) or the original view.
     @ViewBuilder
     func applyIf<T>(
         _ value: T?,
