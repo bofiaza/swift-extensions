@@ -6,7 +6,11 @@ A collection of **useful Swift extensions** to speed up development and reduce b
 
 ## Installation
 
-Simply copy the files you need into your project, ~~or use this repository as a Swift Package:~~
+Simply copy the files you need into your project, or add as submodule:
+
+`git submodule add https://github.com/bofiaza/swift-extensions.git`
+
+~~or use this repository as a Swift Package:~~
 
 [TODO: Update to Package]
 
