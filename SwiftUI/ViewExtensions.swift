@@ -55,7 +55,7 @@ extension View {
     ///     }
     /// ```
     @ViewBuilder
-    func applyIf<T>(
+    public func applyIf<T>(
         _ value: T?,
         apply: (Self, T) -> some View
     ) -> some View {
@@ -72,7 +72,7 @@ extension View {
     /// - Returns: Either the original view if `enabled` is false or the current iOS version does not support `glassEffect()`,
     ///            or the view with `glassEffect()` applied.
     @ViewBuilder
-    func applyGlassEffect(_ enabled: Bool) -> some View {
+    public func applyGlassEffect(_ enabled: Bool) -> some View {
         if enabled, #available(iOS 26.0, *) {
             self.glassEffect()
         } else {
