@@ -43,9 +43,9 @@ public typealias Handler<Input> = (Input) -> Void
 /// ### Example
 /// ```swift
 /// let handler: AsyncHandler<Int> = { value in
-///     print("Start \\(value)")
+///     print("Start \(value)")
 ///     try? await Task.sleep(nanoseconds: 1_000_000_000)
-///     print("End \\(value)")
+///     print("End \(value)")
 /// }
 ///
 /// Task {
@@ -116,7 +116,7 @@ public typealias AsyncProvider<Output> = () async -> Output
 /// ### Example
 /// ```swift
 /// let mapper: Mapper<Int, String> = { value in
-///     return "\\(value)"
+///     return "\(value)"
 /// }
 /// ```
 public typealias Mapper<Input, Output> = (Input) -> Output
@@ -125,11 +125,14 @@ public typealias Mapper<Input, Output> = (Input) -> Output
 ///
 /// ### Example
 /// ```swift
-/// let isEven: Predicate<Int> = { value in
+/// let isEven: Condition<Int> = { value in
 ///     value % 2 == 0
 /// }
 /// ```
-public typealias Predicate<Input> = (Input) -> Bool
+///
+/// - Note: Named `Condition` rather than `Predicate` to avoid clashing with
+///   Foundation's `Predicate` type (iOS 17 / macOS 14 and later).
+public typealias Condition<Input> = (Input) -> Bool
 
 // MARK: - Common
 
@@ -147,11 +150,15 @@ public typealias BoolProvider = Provider<Bool>
 /// These are useful when you need no-op or predictable closures
 /// instead of real implementations.
 ///
+/// The stubs are computed properties rather than stored `static let`s, because
+/// the closure types are not `Sendable` and stored global closures are rejected
+/// under Swift 6 strict concurrency checking.
+///
 /// ### Example
 /// ```swift
 /// let handler: Handler<Int> = StubDefaults.handler()
 /// let value: Provider<String> = StubDefaults.value("Hello")
-/// let check: Predicate<Int> = StubDefaults.predicate(true)
+/// let check: Condition<Int> = StubDefaults.condition(true)
 /// ```
 public enum StubDefaults {
     
@@ -164,7 +171,7 @@ public enum StubDefaults {
     /// let completion: Completion = StubDefaults.action
     /// completion()
     /// ```
-    public static let action: Action = {}
+    public static var action: Action { {} }
     
     /// Returns a no-op handler that ignores its input.
     ///
@@ -191,22 +198,22 @@ public enum StubDefaults {
     }
     
     /// A provider that always returns `true`.
-    public static let trueProvider: BoolProvider = { true }
+    public static var trueProvider: BoolProvider { { true } }
     
     /// A provider that always returns `false`.
-    public static let falseProvider: BoolProvider = { false }
+    public static var falseProvider: BoolProvider { { false } }
     
-    // MARK: - Predicates
+    // MARK: - Conditions
     
-    /// Returns a predicate that always returns the given boolean value,
+    /// Returns a condition that always returns the given boolean value,
     /// regardless of input.
     ///
     /// ### Example
     /// ```swift
-    /// let alwaysTrue: Predicate<String> = StubDefaults.predicate(true)
+    /// let alwaysTrue: Condition<String> = StubDefaults.condition(true)
     /// let result = alwaysTrue("anything") // true
     /// ```
-    public static func predicate<T>(_ value: Bool = false) -> Predicate<T> {
+    public static func condition<T>(_ value: Bool = false) -> Condition<T> {
         { _ in value }
     }
 }
