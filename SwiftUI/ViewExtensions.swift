@@ -4,25 +4,44 @@ extension View {
     
     /// Conditionally applies a transformation to this view.
     ///
-    /// This is useful when you want to apply a modifier or transformation
-    /// only if a certain condition is true.
-    ///
-    /// Example:
+    /// ### Example
     /// ```swift
     /// Text("Hello, world!")
-    ///     .applyIf(true, 24) { view, fontSize in
-    ///         view.font(.system(size: CGFloat(fontSize)))
+    ///     .applyIf(isHighlighted) { view in
+    ///         view.font(.title)
     ///     }
     /// ```
-    /// In this example, the font is increased to 24 points because the condition is `true`.
+    ///
+    /// - Important: The two branches produce different view types, so SwiftUI treats them
+    ///   as different views. When `condition` changes at runtime, the view's `@State` is
+    ///   reset and the change is not animated. For values that change often, prefer passing
+    ///   the condition into the modifier itself, e.g. `.opacity(isHidden ? 0 : 1)`.
+    ///
+    /// - Parameters:
+    ///   - condition: A Boolean value that determines whether the transformation is applied.
+    ///   - transform: A closure that takes the current view and returns a modified view.
+    /// - Returns: The transformed view if `condition` is `true`; otherwise, the original view.
+    @ViewBuilder
+    public func applyIf(
+        _ condition: Bool,
+        transform: (Self) -> some View
+    ) -> some View {
+        if condition {
+            transform(self)
+        } else {
+            self
+        }
+    }
+    
+    /// Conditionally applies a transformation to this view, passing an extra value.
     ///
     /// - Parameters:
     ///   - condition: A Boolean value that determines whether the transformation is applied.
     ///   - value: A value to pass into the transformation closure.
-    ///   - apply: A closure that takes the current view (`self`) and the provided value,
+    ///   - apply: A closure that takes the current view and the provided value,
     ///            returning a modified view.
-    ///
-    /// - Returns: Either the original view if `condition` is false, or the transformed view if `condition` is true.
+    /// - Returns: The transformed view if `condition` is `true`; otherwise, the original view.
+    @available(*, deprecated, message: "Capture the value in the closure and use applyIf(_:transform:) instead.")
     @ViewBuilder
     public func applyIf<T, V: View>(
         _ condition: Bool,
@@ -47,7 +66,10 @@ extension View {
     ///   and returns a modified view.
     /// - Returns: Either the modified view (if `value` is non-`nil`) or the original view.
     ///
-    /// ### Example:
+    /// - Important: As with `applyIf(_:transform:)`, switching between `nil` and non-`nil`
+    ///   at runtime changes the view's identity, resetting its `@State` and skipping animations.
+    ///
+    /// ### Example
     /// ```swift
     /// Text("Hello")
     ///     .applyIf(accessibilityId) { view, id in

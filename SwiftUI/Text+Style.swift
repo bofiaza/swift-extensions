@@ -75,24 +75,31 @@ extension Text {
     /// Text(styled)
     /// ```
     public init(_ styledText: StyledText) {
-        self = Text(styledText.text)
-            .font(styledText.attribute.font)
-            .foregroundColor(styledText.attribute.foregroundColor)
+        self = Text(styledText.text).withTextAttribute(styledText.attribute)
     }
     
     /// Applies a `SimpleTextAttribute` style to an existing `Text` view.
     ///
+    /// Returns `Text` (not `some View`), so styled texts can still be
+    /// concatenated with `+`.
+    ///
     /// - Parameter attribute: The `SimpleTextAttribute` to apply.
-    /// - Returns: A view with the font and foreground color updated.
+    /// - Returns: The text with the font and foreground color updated.
     ///
     /// ### Example
     /// ```swift
     /// let attr = SimpleTextAttribute(font: .headline, foregroundColor: .orange)
     /// Text("Hello").withTextAttribute(attr)
+    ///
+    /// // Concatenation
+    /// Text("Hello, ").withTextAttribute(regular) + Text("World").withTextAttribute(bold)
     /// ```
-    public func withTextAttribute(_ attribute: SimpleTextAttribute) -> some View {
-        self
-            .font(attribute.font)
-            .foregroundColor(attribute.foregroundColor)
+    public func withTextAttribute(_ attribute: SimpleTextAttribute) -> Text {
+        let text = font(attribute.font)
+        if #available(iOS 17.0, macOS 14.0, tvOS 17.0, watchOS 10.0, visionOS 1.0, *) {
+            return text.foregroundStyle(attribute.foregroundColor)
+        } else {
+            return text.foregroundColor(attribute.foregroundColor)
+        }
     }
 }

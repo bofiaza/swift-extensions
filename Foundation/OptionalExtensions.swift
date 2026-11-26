@@ -5,6 +5,8 @@ extension Optional {
     
     /// Returns the wrapped value if the optional is non-`nil`; otherwise, returns the provided default value.
     ///
+    /// Like `??`, the default value is only evaluated when the optional is `nil`.
+    ///
     /// - Parameter defaultValue: The value to return if the optional is `nil`.
     /// - Returns: The unwrapped value, or `defaultValue` if the optional is `nil`.
     ///
@@ -22,8 +24,8 @@ extension Optional {
     /// let items: [String]? = []
     /// print(items.or(["Default Item"])) // Prints []
     /// ```
-    public func or(_ defaultValue: Wrapped) -> Wrapped {
-        self ?? defaultValue
+    public func or(_ defaultValue: @autoclosure () throws -> Wrapped) rethrows -> Wrapped {
+        try self ?? defaultValue()
     }
 }
 
@@ -62,6 +64,25 @@ extension Optional where Wrapped == URL {
     /// print(url3.isNotBlank) // false
     /// ```
     public var isNotBlank: Bool {
-        return self?.isNotBlank ?? false
+        self?.isNotBlank ?? false
+    }
+    
+    /// Indicates whether the optional URL is `nil` or blank.
+    ///
+    /// - Returns: `true` if the optional is `nil` or contains `about:blank`; otherwise, `false`.
+    ///
+    /// ### Example
+    /// ```swift
+    /// let url1: URL? = nil
+    /// print(url1.isNilOrBlank) // true
+    ///
+    /// let url2: URL? = URL.blank
+    /// print(url2.isNilOrBlank) // true
+    ///
+    /// let url3: URL? = URL(string: "https://example.com")
+    /// print(url3.isNilOrBlank) // false
+    /// ```
+    public var isNilOrBlank: Bool {
+        !isNotBlank
     }
 }
