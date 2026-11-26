@@ -66,17 +66,24 @@ extension View {
         }
     }
     
-    /// Conditionally applies a glass effect to this view if enabled and supported by the iOS version.
+    /// Conditionally applies a glass effect to this view if enabled and supported by the OS version.
+    ///
+    /// The effect is only compiled in with a Swift 6.2+ compiler (Xcode 26 SDKs), so the
+    /// package still builds with older toolchains. On visionOS the view is returned unchanged.
     ///
     /// - Parameter enabled: A Boolean value indicating whether to apply the glass effect.
-    /// - Returns: Either the original view if `enabled` is false or the current iOS version does not support `glassEffect()`,
+    /// - Returns: Either the original view if `enabled` is false or the current OS version does not support `glassEffect()`,
     ///            or the view with `glassEffect()` applied.
     @ViewBuilder
     public func applyGlassEffect(_ enabled: Bool) -> some View {
-        if enabled, #available(iOS 26.0, *) {
+        #if compiler(>=6.2) && !os(visionOS)
+        if enabled, #available(iOS 26.0, macOS 26.0, tvOS 26.0, watchOS 26.0, *) {
             self.glassEffect()
         } else {
             self
         }
+        #else
+        self
+        #endif
     }
 }
