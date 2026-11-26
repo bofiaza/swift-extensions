@@ -15,8 +15,6 @@ and the project uses [Semantic Versioning](https://semver.org/).
 ### Changed
 - **Breaking:** `Predicate<Input>` is renamed to `Condition<Input>` and `StubDefaults.predicate(_:)` to
   `StubDefaults.condition(_:)`, to avoid clashing with Foundation's `Predicate`.
-- **Breaking:** `applyAccessibilityInfo` no longer changes layout or hit testing (no extra `VStack`,
-  `fixedSize` or `contentShape`); the label, hint and identifier are applied to the container itself.
 - `Text.withTextAttribute(_:)` returns `Text` instead of `some View`, so styled texts can be concatenated,
   and uses `foregroundStyle` where available.
 - `Optional.or(_:)` evaluates its default lazily and rethrows.
