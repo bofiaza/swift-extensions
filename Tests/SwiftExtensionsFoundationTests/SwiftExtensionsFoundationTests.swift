@@ -70,3 +70,32 @@ final class StubDefaultsTests: XCTestCase {
         handler(1)
     }
 }
+
+final class LazyDefaultAndNilOrBlankTests: XCTestCase {
+
+    func testOrDoesNotEvaluateDefaultWhenValuePresent() {
+        var evaluated = false
+        func makeDefault() -> Int {
+            evaluated = true
+            return 0
+        }
+        let value: Int? = 1
+        XCTAssertEqual(value.or(makeDefault()), 1)
+        XCTAssertFalse(evaluated)
+    }
+
+    func testOrRethrows() {
+        struct Failure: Error {}
+        func failingDefault() throws -> Int { throw Failure() }
+        let missing: Int? = nil
+        XCTAssertThrowsError(try missing.or(failingDefault()))
+        let present: Int? = 1
+        XCTAssertEqual(try present.or(failingDefault()), 1)
+    }
+
+    func testIsNilOrBlank() {
+        XCTAssertTrue((nil as URL?).isNilOrBlank)
+        XCTAssertTrue((URL.blank as URL?).isNilOrBlank)
+        XCTAssertFalse((URL(string: "https://example.com") as URL?).isNilOrBlank)
+    }
+}

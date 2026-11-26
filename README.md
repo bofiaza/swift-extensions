@@ -34,6 +34,9 @@ Then add the products you need to your target:
 | `SwiftExtensionsSwiftUI` | `applyIf`, `applyGlassEffect`, `applyAccessibilityInfo`, `StyledText` / `SimpleTextAttribute` |
 
 Minimum platforms: iOS 15, macOS 12, tvOS 15, watchOS 8, visionOS 1. Requires Swift 6.0 (Xcode 16) or later.
+On Linux only `SwiftExtensionsFoundation` is available.
+
+See [CHANGELOG.md](CHANGELOG.md) for release notes.
 
 ### Manual
 

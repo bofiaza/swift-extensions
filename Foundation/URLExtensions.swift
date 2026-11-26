@@ -9,9 +9,7 @@ extension URL {
     /// let blankURL = URL.blank
     /// print(blankURL) // Prints "about:blank"
     /// ```
-    public static var blank: URL {
-        URL(string: "about:blank")!
-    }
+    public static let blank = URL(string: "about:blank")!
     
     /// Indicates whether this URL is the "blank" URL (`about:blank`).
     ///
